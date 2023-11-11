@@ -48,10 +48,11 @@ router.get('/logout',(req,res)=>{
     res.redirect('/')
 })
 
+
 // router.get('/profile',(req,res)=>{
 //     const cookie = req.cookies;
 //     if(!cookie['verifyToken']){
 //         return res.redirect('/')
 //     }
 // })
-module.exports =router;
+module.exports = router;
