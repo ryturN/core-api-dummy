@@ -2,8 +2,6 @@ const db = require('../dbconfig/index');
 const {DataTypes} = require('sequelize');
 const bcrypt = require('bcrypt');
 
-
-
 const Users = db.define('users',{
     name:{
         type: DataTypes.STRING

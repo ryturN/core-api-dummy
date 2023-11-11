@@ -4,11 +4,11 @@ const dotenv= require('dotenv');
 dotenv.config();
 
 const db = new Sequelize(
-    'db_users',
-    'root',
-    'ryan14',
+    'db_skillshift',
+    'skillshift-client',
+    '@Vi{2~:]f;Kvi`9a',
     {
-        host : 'localhost',
+        host : '34.101.71.233',
         dialect: 'mysql',
     }
 )
