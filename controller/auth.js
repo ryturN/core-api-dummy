@@ -14,16 +14,9 @@ exports.login = async(req,res)=>{
     const {username ,password}=req.body
     const user = await findUser(username,password);
     console.log(user)
-    // if(username == `${prcoess.env.ADMIN_USERNAME}` && await bcrypt.compare(password, `${process.env.ADMIN_PASSWORD}`)){
-    //   const data = {
-    //     admin : true
-    //   }
-    //   const token = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
-    //   return res.cookie('verifyToken',token).status(201).redirect('/home');
-    // }
+
     if(user){
       const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
-      // const userJSON = JSON.stringify(user);
       return res.cookie('verifyToken',token,{
         httpOnly: true,
         maxAge: 24*60*60*1000,
@@ -106,7 +99,10 @@ exports.verify = async (req,res)=>{
         }
         console.log("Message sent: %s", info.messageId);
       });
-      return res.json({email : dataStorage.email}); 
+      return res.json({
+        email : dataStorage.email,
+        code : dataStorage.verificationCode
+      }); 
 }
 
 
