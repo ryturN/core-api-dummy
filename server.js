@@ -4,9 +4,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const dbConfig = require('./dbconfig/index')
 const router = require('./routes/routes')
-const auth = require('./routes/auth')
 const cookieParser = require("cookie-parser");
 const controlpanel_api = require('./routes/controlpanel');
+const android_api = require('./routes/android');
 
 
 // try{
