@@ -7,4 +7,8 @@ const photosTable = db.define('photos', {
     }
 });
 
+photosTable.sync().then(() => {
+    console.log('Photos table is synced!')
+});
+
 module.exports = photosTable;

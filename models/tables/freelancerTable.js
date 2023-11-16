@@ -54,4 +54,8 @@ const freelancerTable = db.define('freelancer', {
     }
 });
 
+freelancerTable.sync().then(() => {
+    console.log('Freelancer table is synced!');
+})
+
 module.exports = freelancerTable;

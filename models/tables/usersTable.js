@@ -41,4 +41,8 @@ const usersTable = db.define('users', {
     }
 });
 
+usersTable.sync().then(() => {
+    console.log('Users table is synced!');
+})
+
 module.exports = usersTable;
