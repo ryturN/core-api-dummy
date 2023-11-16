@@ -17,7 +17,6 @@ exports.login = async(req,res)=>{
   try{
     const {username,email,password,options}=req.body
     const user = await findUser(username,password);
-    console.log(user)
     if(user){
       const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
        return res.cookie('verifyToken',token,{
@@ -89,7 +88,9 @@ exports.verify = async (req,res)=>{
           dataStorage.username,
           dataStorage.email,
           dataStorage.password,
-          )
+          ).then(()=>{
+            localStorage.removeItem('data')
+          })
           res.status(201).send(dataStorage)
         }
       if(dataStorage.options == "freelancer"){
@@ -99,7 +100,10 @@ exports.verify = async (req,res)=>{
           dataStorage.fullName,
           dataStorage.username,
           dataStorage.email,
-          dataStorage.password)
+          dataStorage.password
+          ).then(()=>{
+            localStorage.removeItem('data')
+          })
           res.status(201).send(dataStorage)
       }
     }else{
