@@ -1,7 +1,7 @@
 const express = require ('express')
 const auth = require('../controller/auth.js')
 const verify = require('../middleware/verifyToken.js');
-const  profile  = require('../controller/profile.js');
+const profile  = require('../controller/profile.js');
 
 const router = express.Router();
 
@@ -48,7 +48,7 @@ router.get('/logout',(req,res)=>{
     res.clearCookie('verifyToken');
     res.json({
         message: 'See You Later Nerd'})
-})
+});
 
 router.get('/profile');
 
