@@ -89,7 +89,7 @@ exports.verify = async (req,res)=>{
           dataStorage.email,
           dataStorage.password,
           ).then(()=>{
-            localStorage._deleteLocation()
+            localStorage.removeItem('data')
           })
           res.status(201).send(dataStorage)
         }
@@ -102,7 +102,7 @@ exports.verify = async (req,res)=>{
           dataStorage.email,
           dataStorage.password
           ).then(()=>{
-            localStorage._deleteLocation()
+            localStorage.removeItem('data')
           })
           res.status(201).send(dataStorage)
       }
