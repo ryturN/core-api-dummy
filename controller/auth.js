@@ -1,16 +1,22 @@
 const {LocalStorage} = require('node-localstorage')
-const db = require('../dbconfig/index')
-localStorage = new LocalStorage('./scratch')
-const nodemailer = require('nodemailer')
-const {createUser,findUser} = require('../models/createFunc/users')
-const {Users, freelancerTable} = require('../models/table')
-const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/createFunc/freelancerCreate')
+const db = require('../dbconfig/index');
+localStorage = new LocalStorage('./scratch');
+const nodemailer = require('nodemailer');
 const dotenv= require('dotenv');
 const jwt = require('jsonwebtoken')
 const { nanoid } = require('nanoid') 
 const { Op } = require('sequelize');
-
 dotenv.config();
+
+// Tables
+const usersTable = require('../models/tables/usersTable');
+const freelancerTable = require('../models/tables/freelancerTable');
+
+// Functions
+const {createUser,findUser} = require('../models/functions/usersFunction');
+const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction')
+
+
 
 
 exports.login = async(req,res)=>{
@@ -126,7 +132,7 @@ exports.register = async (req,res)=>{
       confirmPassword : req.body.confirmPassword,
       options: req.body.options
     };
-    const usernameCheck = await Users.findAll({where : {username}})
+    const usernameCheck = await usersTable.findAll({where : {username}})
     const usernameCheckF = await freelancerTable.findAll({where: {username}}) 
     if(options == 'consumer'){
       if (usernameCheck.length > 0) {
@@ -135,7 +141,7 @@ exports.register = async (req,res)=>{
           message: 'username already taken!'
         });
       }
-      const emailCheck= await Users.findAll({where: {email}})
+      const emailCheck= await usersTable.findAll({where: {email}})
       if(emailCheck.length > 0){
         return res.status(401).json({
           status: 'fail',

@@ -3,9 +3,30 @@ const auth = require('../controller/auth.js')
 const verify = require('../middleware/verifyToken.js');
 const profile  = require('../controller/profile.js');
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/',(req,res)=>{
+// AUTHENTICATION ROUTES
+.post('/register',auth.register)
+.post('/verify',auth.verify)
+.post('/login', auth.login)
+.get('/profile/:username?',profile.profileUsers)
+.get('/profile',profile.profiles)
+
+.get('/register',(req,res)=>{
+    res.render('register')
+})
+
+.get('/verify',(req,res)=>{
+    res.render('verify')
+})
+
+.get('/logout',(req,res)=>{
+    res.clearCookie('verifyToken');
+    res.json({
+        message: 'See You Later Nerd'})
+})
+ 
+.get('/',(req,res)=>{
     const cookie = req.cookies;
     if(!cookie['verifyToken']){
         res.render('index')
@@ -14,25 +35,13 @@ router.get('/',(req,res)=>{
         return res.redirect('/home')
     }
 })
-router.get('/register',(req,res)=>{
-    res.render('register')
-})
-router.get('/verify',(req,res)=>{
-    res.render('verify')
-})
 
-router.post('/register',auth.register)
-router.post('/verify',auth.verify)
-router.post('/login', auth.login)
-router.get('/profile/:username?',profile.profileUsers);
-router.get('/profile',profile.profiles);
-
-
-router.get('/home',verify.verificationToken,(req,res)=>{
+.get('/home',verify.verificationToken,(req,res)=>{
     const user = req.user;
     res.render('home',{user})
 })
-router.get('/dashboard',(req,res)=>{
+
+.get('/dashboard',(req,res)=>{
     const cookie = req.cookies;
     if(!cookie['verifyToken']){
         return res.redirect('/')
@@ -43,15 +52,6 @@ router.get('/dashboard',(req,res)=>{
     res.render('home/dashboard',{data});
 })
 
-
-router.get('/logout',(req,res)=>{
-    res.clearCookie('verifyToken');
-    res.json({
-        message: 'See You Later Nerd'})
-});
-
-
-
-router.get('/profile');
+.get('/profile')
 
 module.exports =router;

@@ -1,11 +1,15 @@
 const {LocalStorage} = require('node-localstorage')
 const db = require('../dbconfig/index')
 localStorage = new LocalStorage('./scratch')
-const {Users, freelancerTable}= require('../models/table')
-const {createUser,findUser,updateUser} = require('../models/createFunc/users')
-const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/createFunc/freelancerCreate')
 const auth = require('./auth')
 
+// Tables
+const usersTable = require('../models/tables/usersTable');
+const freelancerTable = require('../models/tables/freelancerTable')
+
+// Functions
+const {createUser,findUser,updateUser} = require('../models/functions/usersFunction')
+const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction')
 
 exports.profileUsers = async(req,res)=>{
   const { username } = req.params;
