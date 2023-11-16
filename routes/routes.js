@@ -50,6 +50,8 @@ router.get('/logout',(req,res)=>{
         message: 'See You Later Nerd'})
 })
 
+
+
 router.get('/profile');
 
 module.exports =router;
