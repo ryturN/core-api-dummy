@@ -10,7 +10,7 @@ const createFreelancer = async function(freelancer_id,fullName,username,email,pa
         username,
         email,
         password:hashedPassword,
-        });
+    });
 }
 
 const updateFreelancer = async function(name,username,email,password){
