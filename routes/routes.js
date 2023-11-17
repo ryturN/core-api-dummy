@@ -2,6 +2,7 @@ const express = require ('express')
 const auth = require('../controller/auth.js')
 const verify = require('../middleware/verifyToken.js');
 const profile  = require('../controller/profile.js');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router()
 

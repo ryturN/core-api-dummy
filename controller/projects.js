@@ -1,12 +1,8 @@
-const { newProject, deleteProject, searchProjects } = require("../models/functions/projectsFunction");
+const { newProject, deleteProject, searchProjectsAll, searchProjectsFilter } = require("../models/functions/projectsFunction");
 
 exports.newProjectHandler = async (req, res) => {
-    if(typeof req.body == "undefined") {
-        return res
-        .status(404).json({status: "failed", message: "There's nothing to be requested in the body data!"});
-    }
     const { project_name, project_desc, user_id, deadline } = req.body;
-    if(project_name == "" || project_desc == "" || user_id == "" || deadline == "") {
+    if(project_name == "" || project_desc == "" || user_id == "" || deadline == "" || typeof project_name == "undefined" || typeof project_desc == "undefined" || typeof user_id == "undefined" || typeof deadline == "undefined") {
         return res
         .status(404).json({status: "failed", message: "There's nothing to be requested in the body data!"})
     }
@@ -28,29 +24,35 @@ exports.newProjectHandler = async (req, res) => {
 }
 
 exports.searchProjectsHandler =  async (req, res) => {
-    // Listing all the projects available
-    const { all, user_id } = req.body;
-    if(all) {
-        const result = await searchProjects();
+    const {by, value} = req.query;
+    // Check if query is undefined!
+    if(typeof by == "undefined") {
         return res
-        .status(200).json({status: "success", message: "Here's all the projects data", data: result})
+        .status(404).json({status: "failed", message: "You need to specify the filter!"})
     }
 
-    // Listing all the projects available based on user's id
-    if(user_id) {
-        const result = await searchProjects();
+    if(by == "all"){
+        const result = await searchProjectsAll();
         return res
-        .status(200).json({status: "success", message: "Here's all the projects data", data: result})
+        .status(200).json({status: "success", message: "Here's all the data!", data: result});
     }
 
+    if(by == "project_name") {
+        if(typeof value == "undefined" || !value) {
+            return res
+            .status(404).json({status: "failed", message: `You need to specify the value of the ${by}`});
+        }
+
+        const result = await searchProjectsFilter(by, value);
+        return res
+        .status(200).json({status: "success", message: "Here's the filtered data", data: result})
+    }
+
+    return res
+    .status(404).json({status: "failed", message: "You need to specify filter data correctly!"});
 }
 
 exports.deleteProjectsHandler = async (req, res) => {
-    if(typeof req.body === "undefined") {
-        return res
-        .status(404).json({status: "failed", message: "There's nothing to be requested in the body data!"});
-    }
-
     const { project_id, user_id } = req.body;
     if(project_id == "" || user_id == "" || typeof project_id == "undefined" || typeof user_id == "undefined") {
         return res

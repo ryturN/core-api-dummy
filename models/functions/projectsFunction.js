@@ -3,7 +3,7 @@ const db = require("../../dbconfig/index");
 const projectsTable = require("../tables/projectsTable");
 const { nanoid } = require("nanoid");
 
-// ---------------------------------------------------
+// --------------------------------------------------- PROJECTS TABLE FUNCTIONS
 const newProject = async (data) => {
     const { project_name, project_desc, user_id, deadline } = data;
     if(user_id === "") {
@@ -55,13 +55,36 @@ const deleteProject = async (data) => {
     return true;
 };
 
-const searchProjects = async (settings) => {
+const searchProjectsAll = async () => {
     const result = await projectsTable.findAll();
     return result
+}
+
+const searchProjectsFilter = async (filter, value) => {
+    if(filter == "project_id") {
+        const result = await projectsTable.findAll({
+            where: {
+                project_id: {
+                    [Op.substring]: value
+                }
+            }
+        });
+        return result;
+    }else if(filter == "project_name") {
+        const result = await projectsTable.findOne({
+            where: {
+                project_name: {
+                    [Op.substring]: value
+                }
+            }
+        });
+        return result;
+    }
 }
 
 module.exports = {
     newProject,
     deleteProject,
-    searchProjects
+    searchProjectsAll,
+    searchProjectsFilter
 }
