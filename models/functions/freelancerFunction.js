@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
-const { Op } = require('sequelize');
-const freelancerTable = require('../tables/freelancerTable');
+const { freelancerTable } = require('../table')
+const { Op } = require('sequelize')
 
 const createFreelancer = async function(freelancer_id,fullName,username,email,password){
     const hashedPassword = await bcrypt.hashSync(password,10)
@@ -10,21 +10,18 @@ const createFreelancer = async function(freelancer_id,fullName,username,email,pa
         username,
         email,
         password:hashedPassword,
-    });
+        });
 }
-
-const updateFreelancer = async function(name,username,email,password){
+const updateFreelancer = async function(password){
     const hashedPassword = await bcrypt.hashSync(password,10)
-    freelancerTable.update({full_name,
-        username,
-        email,
-        password:hashedPassword});
+    freelancerTable.update({
+        password:hashedPassword
+    });
 }
 
 const findFreelancer = async function(username, password) {
     try {
         const user = await freelancerTable.findOne({ where: { username } });
-        console.log(user);
         if (user) {
             const result = bcrypt.compareSync(password, user.password);
             if (result) {

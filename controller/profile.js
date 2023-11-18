@@ -13,16 +13,18 @@ const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/fu
 
 exports.profileUsers = async(req,res)=>{
   const { username } = req.params;
-  const cookie = req.cookies;
+  const cookie = await req.cookies;
   try {
     const user = await Users.findOne({ where: { username } }) 
     const freelancer = await freelancerTable.findOne({where: {username}});
     
-      if (!cookie['verifyToken']) {
-         res.status(401).json({
-           status: 'fail',
-           message: 'Unauthorized!' });
-      }
+    if (!cookie.verifyToken) {
+
+      return res.status(404).json({
+        status: 'fail',
+        message: 'unauthorized!'
+      });
+    }
       if(user){
        return res.status(200).json({
           name: user.fullName,
@@ -43,12 +45,12 @@ exports.profileUsers = async(req,res)=>{
           role: 'freelancer'
         });
       }
-      if(!user || !freelancer){
+      if(!user && !freelancer){
        return res.status(404).json({ message: 'User tidak ditemukan!' });
       }
     } catch (error) {
       console.error(error); 
-      res.status(500).json({ 
+     return res.status(500).json({ 
         status: 'fail',
         message: 'Internal server error' });
     }
@@ -59,7 +61,7 @@ exports.profiles = async(req,res)=>{
   try{
     if(auth.login){
     const user = await Users.findOne({where: {username}});
-      res.status(200).json({
+     return res.status(200).json({
         name: user.name,
         username: user.username,
         email: user.email,
