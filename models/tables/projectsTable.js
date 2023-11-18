@@ -17,10 +17,13 @@ const projectsTable = db.define('projects', {
     },
     deadline: {
         type: DataTypes.DATE
+    },
+    project_category: {
+        type: DataTypes.STRING
     }
 });
 
-projectsTable.sync().then(() => {
+projectsTable.sync({ alter: true }).then(() => {
     console.log('Projects table is synchronized!')
 });
 

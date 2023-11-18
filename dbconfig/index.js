@@ -10,6 +10,7 @@ const db = new Sequelize(
     {
         host : '34.101.71.233',
         dialect: 'mysql',
+        logging: false
     }
 )
 

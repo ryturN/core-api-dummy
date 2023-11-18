@@ -5,7 +5,7 @@ const { nanoid } = require("nanoid");
 
 // --------------------------------------------------- PROJECTS TABLE FUNCTIONS
 const newProject = async (data) => {
-    const { project_name, project_desc, user_id, deadline } = data;
+    const { project_name, project_desc, user_id, deadline, project_category } = data;
     if(user_id === "") {
         return false;
     }

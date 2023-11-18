@@ -1,8 +1,15 @@
 const { newProject, deleteProject, searchProjectsAll, searchProjectsFilter } = require("../models/functions/projectsFunction");
 
+
+// CREATE READ UPDATE DELETE FOR PROJECTS TABLE
 exports.newProjectHandler = async (req, res) => {
-    const { project_name, project_desc, user_id, deadline } = req.body;
-    if(project_name == "" || project_desc == "" || user_id == "" || deadline == "" || typeof project_name == "undefined" || typeof project_desc == "undefined" || typeof user_id == "undefined" || typeof deadline == "undefined") {
+    const isBodyDefined = Object.values(req.body).every(value => typeof value !== "undefined");
+    if(!isBodyDefined) {
+        return res
+        .status(404).json({status: "failed", message: "There's nothing to be requested in the body data!"})
+    }
+    const { project_name, project_desc, user_id, deadline, project_category } = req.body;
+    if(!project_name || !project_desc || !user_id || !deadline || !project_category) {
         return res
         .status(404).json({status: "failed", message: "There's nothing to be requested in the body data!"})
     }
@@ -10,7 +17,8 @@ exports.newProjectHandler = async (req, res) => {
         project_name: project_name,
         project_desc: project_desc,
         user_id: user_id,
-        deadline: deadline
+        deadline: deadline,
+        project_category: project_category
     };
 
     const result = await newProject(data);
@@ -71,3 +79,5 @@ exports.deleteProjectsHandler = async (req, res) => {
     return res
     .status(200).json({status: "success", message: "Deleting the project data is succeeded!", data: data});
 }
+
+// HANDLER FOR ACTIVE PROJECTS
