@@ -5,11 +5,11 @@ const auth = require('./auth')
 
 // Tables
 const usersTable = require('../models/tables/usersTable');
-const freelancerTable = require('../models/tables/freelancerTable')
+const freelancerTable = require('../models/tables/freelancerTable');
 
 // Functions
-const {createUser,findUser,updateUser} = require('../models/functions/usersFunction')
-const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction')
+const {createUser,findUser,updateUser} = require('../models/functions/usersFunction');
+const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction');
 
 exports.profileUsers = async(req,res)=>{
   const { username } = req.params;
