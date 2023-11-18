@@ -2,14 +2,14 @@ const {LocalStorage} = require('node-localstorage')
 const db = require('../dbconfig/index')
 localStorage = new LocalStorage('./scratch')
 const nodemailer = require('nodemailer')
-const {createUser,findUser} = require('../models/createFunc/users')
-const {Users, freelancerTable} = require('../models/table')
-const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/createFunc/freelancerCreate')
 const dotenv= require('dotenv');
 const jwt = require('jsonwebtoken')
 const { nanoid } = require('nanoid') 
 const { Op } = require('sequelize');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const usersTable = require('../models/tables/usersTable');
+const freelancerTable = require('../models/tables/freelancerTable');
+const { createUser, findUser, updateUser } = require('../models/functions/usersFunction');
 dotenv.config();
 
 exports.forgetPassword = async (req, res) => {

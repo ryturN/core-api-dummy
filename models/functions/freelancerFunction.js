@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { freelancerTable } = require('../table')
+const { freelancerTable } = require('../tables/freelancerTable')
 const { Op } = require('sequelize')
 
 const createFreelancer = async function(freelancer_id,fullName,username,email,password){

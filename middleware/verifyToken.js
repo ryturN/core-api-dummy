@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
-const {Users,freelancerTable} = require('../models/table.js');
+// Tables
+const freelancerTable = require('../models/tables/freelancerTable');
+const usersTable = require('../models/tables/usersTable');
+
 
 
 exports.verificationToken = async (req, res) => {
@@ -16,7 +19,7 @@ exports.verificationToken = async (req, res) => {
         return res.render('index');
       }
       const username = decoded.username
-      const userConsumer = await Users.findOne({where: {username}})
+      const userConsumer = await usersTable.findOne({where: {username}})
       const userFreelancer = await freelancerTable.findOne({where: {username}})
       if(userConsumer){
         res.json({

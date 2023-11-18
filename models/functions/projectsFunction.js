@@ -82,6 +82,12 @@ const searchProjectsFilter = async (filter, value) => {
     }
 }
 
+const updateProjects = async (data) => {
+    const { project_name, project_desc, project } = data;
+}
+
+// 
+
 module.exports = {
     newProject,
     deleteProject,
