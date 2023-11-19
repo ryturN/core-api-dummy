@@ -67,7 +67,6 @@ router.get('/verify',(req,res)=>{
 
 //  ============================= POST ROUTER ========================================== //
 
-
 router.post('/register',auth.register)
 router.post('/verifyUser',auth.verify)
 router.post('/login', auth.login)
