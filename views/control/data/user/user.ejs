@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="relative w-full h-screen overflow-hidden">
+    
+    <%- include('../../navbar') %>
+    <div class="flex w-full h-full">
+        <%- include('../../left_sidebar') %>
+        <div class="p-5 w-full">
+            <form action="" class="relative w-full flex gap-5" method="post">
+                <input type="text" class="w-1/2 h-10 rounded-2xl border focus:border-2 outline-none px-4 font-nunito border-zinc-600 text-sm">
+                <p class="absolute top-0 left-0 font-nunito w-fit bg-white px-1 text-sm font-bold translate-x-3 -translate-y-2">
+                    Search here
+                </p>
+                <select name="" id="" class="transition-all duration-300 w-1/6 cursor-pointer outline-none rounded-2xl hover:bg-zinc-100 px-1"> 
+                    <option value="">Username</option>
+                    <option value="">Email</option>
+                    <option value="">Nama</option>
+                    <option value="">NIK</option>
+                </select>
+            </form>
+            <hr class="my-3 opacity-0">
+            <div class="flex font-nunito font-bold text-sm text-zinc-900">
+                <p>
+                    Username <br>
+                    <span class="italic text-xs font-medium text-zinc-700">
+                        ID
+                    </span>
+                </p>
+                <p>
+                    Username <br>
+                    <span class="italic text-xs font-medium text-zinc-700">
+                        Email
+                    </span> 
+                </p>
+                <p>
+                    Email
+                </p>
+            </div>
+        </div>
+        <div class="w-1/3 bg-green-500"></div>
+    </div>
+    
+    <!-- <script src="/js/script.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="/js/control/data/projects/script.js"></script>
+    
+</body>
+</html>

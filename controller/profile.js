@@ -60,7 +60,7 @@ exports.profiles = async(req,res)=>{
   const cookie = req.cookies;
   try{
     if(auth.login){
-    const user = await Users.findOne({where: {username}});
+    const user = await usersTable.findOne({where: {username}});
      return res.status(200).json({
         name: user.name,
         username: user.username,

@@ -3,8 +3,10 @@ const auth = require('../controller/auth.js')
 const verify = require('../middleware/verifyToken.js');
 const  profile  = require('../controller/profile.js');
 const jwt = require('jsonwebtoken')
-const {Users,freelancerTable} = require('../models/table.js');
+
 const  resetPassword  = require('../controller/resetPassword.js');
+const freelancerTable = require('../models/tables/freelancerTable.js');
+const usersTable = require('../models/tables/usersTable.js');
 
 const router = express.Router();
 
@@ -66,12 +68,7 @@ router.get('/logout',(req,res)=>{
         message: 'See You Later Nerd'})
 })
 
-router.get('*',(req,res)=>{
-    res.status(404).json({
-        status: 'fail',
-        message: 'u got wrong address bro'
-    })
-})
+
 
 
 module.exports =router;

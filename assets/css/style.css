@@ -19,3 +19,28 @@
 .font-varela {
     font-family: 'Varela Round', sans-serif;
 }
+
+
+#main_content {
+    --sb-track-color: #949494;
+    --sb-thumb-color: #656565;
+    --sb-size: 5px;
+  
+    scrollbar-color: var(--sb-thumb-color) 
+                     var(--sb-track-color);
+  }
+  
+  #main_content::-webkit-scrollbar {
+    width: var(--sb-size) 
+  }
+  
+  #main_content::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 10px;
+  }
+  
+  #main_content::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 10px;
+    
+    }
