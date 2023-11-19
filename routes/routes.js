@@ -77,6 +77,30 @@ router.post('/forget/verify', resetPassword.verifyCode)
 router.post('/forget/verify/new', resetPassword.enterNewPassword)
 
 
+<<<<<<< HEAD
+=======
+router.get('/dashboard',(req,res)=>{
+    const cookie = req.cookies;
+    if(!cookie.verifyToken){
+        return res.redirect('/')
+    }
+    const data = {
+        admin:true
+    };
+    res.render('home/dashboard',{data});
+})
+
+
+
+
+router.get('/logout',(req,res)=>{
+    res.clearCookie('verifyToken');
+    res.json({
+        status: 'success',
+        message: 'See You Later Nerd'})
+})
+
+>>>>>>> d0064c83aa5b43d8b951b678199a9fc2180642e0
 
 
 module.exports =router;
