@@ -15,7 +15,7 @@ exports.profileUsers = async(req,res)=>{
   const { username } = req.params;
   const cookie = await req.cookies;
   try {
-    const user = await Users.findOne({ where: { username } }) 
+    const user = await usersTable.findOne({ where: { username } }) 
     const freelancer = await freelancerTable.findOne({where: {username}});
     
     if (!cookie.verifyToken) {
