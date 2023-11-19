@@ -1,6 +1,5 @@
 const { newProject, deleteProject, searchProjectsAll, searchProjectsFilter } = require("../models/functions/projectsFunction");
 
-
 // CREATE READ UPDATE DELETE FOR PROJECTS TABLE
 exports.newProjectHandler = async (req, res) => {
     const isBodyDefined = Object.values(req.body).every(value => typeof value !== "undefined");
@@ -81,3 +80,4 @@ exports.deleteProjectsHandler = async (req, res) => {
 }
 
 // HANDLER FOR ACTIVE PROJECTS
+
