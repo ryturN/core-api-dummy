@@ -36,7 +36,8 @@ router.get('/verify',(req,res)=>{
 router.post('/register',auth.register)
 router.post('/verifyUser',auth.verify)
 router.post('/login', auth.login)
-router.get('/profile/:username',profile.profileUsers);
+router.get('/profile/:username?',profile.profileUsers);
+router.all('/profile/edit',profile.updateProfile);
 router.get('/profile',profile.profiles);
 router.post('/forget',resetPassword.forgetPassword);
 router.get('/forget',(req,res)=>{
@@ -44,7 +45,6 @@ router.get('/forget',(req,res)=>{
 })
 router.post('/forget/verify', resetPassword.verifyCode)
 router.post('/forget/verify/new', resetPassword.enterNewPassword)
-// router.get('/profile', auth.profile)
 
 
 router.get('/dashboard',(req,res)=>{
@@ -68,7 +68,12 @@ router.get('/logout',(req,res)=>{
         message: 'See You Later Nerd'})
 })
 
-
+router.get('*',(req,res)=>{
+    res.status(404).json({
+        status: 'fail',
+        message: 'u got wrong address bro'
+    })
+})
 
 
 module.exports =router;

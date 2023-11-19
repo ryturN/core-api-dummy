@@ -27,7 +27,7 @@ const freelancerTable = db.define('freelancer', {
         type: DataTypes.STRING,
     },
     telephoneNumber:{
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
     },
     nationalId:{
         type: DataTypes.STRING,
