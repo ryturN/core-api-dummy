@@ -73,8 +73,7 @@ exports.profiles = async(req,res)=>{
   }
 }
 
-
-exports.updateProfile = async(req,res)=>{
+exports.updateProfile = async (req, res)=>{
   const {name,username,email,password} = req.body;
   
 }
