@@ -35,7 +35,7 @@ router.get('/register',(req,res)=>{
 router.get('/verify',(req,res)=>{
     res.render('verify')
   })
-  router.get('/profile/:username?',profile.profileUsers);
+  router.get('/profile/:username',profile.profileUsers);
   router.get('/profile',profile.profiles);
   router.get('/forget',(req,res)=>{
     res.render('forget')
