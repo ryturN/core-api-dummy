@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { usersTable } =require('../tables/usersTable');
+const  usersTable  =require('../tables/usersTable');
 
 
 

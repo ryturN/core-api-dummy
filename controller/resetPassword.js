@@ -16,7 +16,7 @@ exports.forgetPassword = async (req, res) => {
   try{
     const email = req.body.email;
     const emailFreelancer = await freelancerTable.findOne({ where: { email } });
-    const emailConsumer = await Users.findOne({ where: { email } });
+    const emailConsumer = await usersTable.findOne({ where: { email } });
     const verificationCode = Math.floor(10000 + Math.random() * 90000);
     const emailToken = jwt.sign({ email,verificationCode }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
     res.cookie('emailToken', emailToken, {
@@ -164,7 +164,7 @@ exports.forgetPassword = async (req, res) => {
             })
         }
             const email = decoded.email
-            const findConsumerEmail = await Users.findOne({where: {email} })
+            const findConsumerEmail = await usersTable.findOne({where: {email} })
             const findFreelancerEmail = await freelancerTable.findOne({where: {email} })
         if(findConsumerEmail){
             const hashedPassword = await bcrypt.hashSync(password,10)

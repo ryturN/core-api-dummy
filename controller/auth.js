@@ -140,95 +140,101 @@ exports.verify = async (req,res)=>{
         }
         
       
-      exports.register = async (req,res)=>{
-        try{
-        const {fullName,username ,email,password,confirmPassword,options}= req.body
-        const dataStorage = {
-          fullName : req.body.fullName,
-          username : req.body.username,
-          email : req.body.email,
-          password : req.body.password,
-          confirmPassword : req.body.confirmPassword,
-          options: req.body.options
-        };
-        const verificationCode = Math.floor(10000 + Math.random() * 90000);
-        const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10m'});
-        res.cookie('saveData',saveData,{
-        httpOnly: true,
-        maxAge: 300000,
-        secure: true  
-      })
-    const usernameCheck = await Users.findAll({where : {username}})
-    const usernameCheckF = await freelancerTable.findAll({where: {username}}) 
-    if(options == 'consumer'){
-      if (usernameCheck.length > 0) {
-        return res.status(401).json({
-          status: 'fail',
-          message: 'username already taken!'
-        });
-      }
-      const emailCheck= await Users.findAll({where: {email}})
-      if(emailCheck.length > 0){
-        return res.status(401).json({
-          status: 'fail',
-          message: 'email already taken!'
+        exports.register = async (req,res)=>{
+          try{
+          const {fullName,username ,email,password,confirmPassword,options}= req.body
+          const dataStorage = {
+            fullName : req.body.fullName,
+            username : req.body.username,
+            email : req.body.email,
+            password : req.body.password,
+            confirmPassword : req.body.confirmPassword,
+            options: req.body.options
+          }; //save what user input into "data storage"
+          const verificationCode = Math.floor(10000 + Math.random() * 90000); //for verification code
+          const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10m'}); //save data storage and verification code into jwt with name "save data"
+          res.cookie('saveData',saveData,{
+          httpOnly: true,
+          maxAge: 300000,
+          secure: true  
         })
-      }
-    }
-    if(options == 'freelancer'){
-      if (usernameCheckF.length > 0) {
-        return res.status(401).json({
-          status: 'fail',
-          message: 'username already taken!'
-        });
-      }
-      const emailCheckF= await freelancerTable.findAll({where: {email}})
-      if(emailCheckF.length > 0){
-        return res.status(401).json({
-          status: 'fail',
-          message: 'email already taken!'
-        })
-      }
-    }
-    if(password !== confirmPassword){
-      return res.status(401).send('Password & Confirm Password Tidak Sama!');
-    }
-      let transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: `watashiox@gmail.com`,
-          pass:`xtcvwuvoxccwcong`,
-        },
-      });
-      
-      let mailOptions = {
-        from: '"LowerMoon" uppermoon1404@gmail.com',
-        to: req.body.email,
-        subject: "Verification Code",
-        text: `Your verification code is ${verificationCode}.`,
-        html: `<b>Your verification code is ${verificationCode}.</b>`,
-      };
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error("Error sending email:", error);
-          return res.send("Error sending email").code(500);
+      const usernameCheck = await usersTable.findAll({where : {username}}) //checking username Users
+      const usernameCheckF = await freelancerTable.findAll({where: {username}}) //checking username Freelancer
+      if(options == 'consumer'){ //if options "consumer"
+        if (usernameCheck.length > 0) { //checking username if already taken then status fail
+          return res.status(401).json({
+            status: 'fail',
+            message: 'username already taken!' 
+          });
         }
-        console.log("Message sent: %s", info.messageId);
-      });
-
-      res.status(202).json({
-        status: 'success',
-        username: username,
-        code : verificationCode,
-        role: options,
-        token: saveData
-      }); 
-}catch(err){
-  res.status(505).json({
-    status: 'fail',
-    message: err
-  })
-}
-}
-
+        const emailCheck= await usersTable.findAll({where: {email}}) //then if username is not taken , then checking email if already taken then status fail
+        if(emailCheck.length > 0){
+          return res.status(401).json({
+            status: 'fail',
+            message: 'email already taken!'
+          })
+        }
+      }
+      if(options == 'freelancer'){ //if option "consumer"
+        if (usernameCheckF.length > 0) { //checking username if already taken then status fail
+          return res.status(401).json({ 
+            status: 'fail',
+            message: 'username already taken!'
+          });
+        }
+        const emailCheckF= await freelancerTable.findAll({where: {email}}) //if username is not taken , then checking email is already taken or not , if taken then status fail
+        if(emailCheckF.length > 0){
+          return res.status(401).json({
+            status: 'fail',
+            message: 'email already taken!'
+          })
+        }
+      }
+      if(password !== confirmPassword){ //if username & email is already checking and both not taken , then checking password user and confirm passowrd is match or not , if not then status fail 
+        return res.status(401).send('Password & Confirm Password Tidak Sama!');
+      }
+  
+      //create transporter for sending verif code
+        let transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: `watashiox@gmail.com`,
+            pass:`xtcvwuvoxccwcong`,
+          },
+        });
+        
+      //if username , email , and password already checking ,then sending email verification code to user email 
+        let mailOptions = {
+          from: '"LowerMoon" uppermoon1404@gmail.com',
+          to: req.body.email,
+          subject: "Verification Code",
+          text: `Your verification code is ${verificationCode}.`,
+          html: `<b>Your verification code is ${verificationCode}.</b>`,
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error("Error sending email:", error);
+            return res.send("Error sending email").code(500);
+          }
+          console.log("Message sent: %s", info.messageId);
+        });
+  
+        res.status(202).json({
+          status: 'success',
+          username: username,
+          code : verificationCode,
+          role: options,
+          token: saveData
+  
+  
+  
+        
+        }); 
+  }catch(err){
+    res.status(505).json({
+      status: 'fail',
+      message: err
+    })
+  }
+  }
 

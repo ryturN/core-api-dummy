@@ -2,6 +2,9 @@ const {LocalStorage} = require('node-localstorage')
 const db = require('../dbconfig/index')
 localStorage = new LocalStorage('./scratch')
 const auth = require('./auth')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+
 
 // Tables
 const usersTable = require('../models/tables/usersTable');
@@ -111,7 +114,7 @@ exports.profileUsers = async(req,res)=>{
 
 exports.updateProfile = async(req,res)=>{
   try {
-    const {fullName,email,password,telephoneNumber,nationalId} = req.body;
+    const {fullName,password,telephoneNumber,nationalId} = req.body;
     const cookie = await req.cookies;
     
     if (!cookie.verifyToken) {
@@ -133,22 +136,7 @@ exports.updateProfile = async(req,res)=>{
 
      const usernameCheck = await usersTable.findAll({where : {username}})
 
-    if(userConsumer){
-      if(fullName == userConsumer.fullName && email == userConsumer.email && password == userConsumer.password(bcrypt.compareSync(password, userConsumer.password)) && telephoneNumber == userConsumer.telephoneNumber && nationalId == userConsumer.nationalId){
-        return res.status(401).json({
-          status: 'fail',
-          message: 'nothing change!'
-        })
-      }
-    }
-    if(userConsumer){
-      if(fullName == userFreelancer.fullName && email == userFreelancer.email && password == userFreelancer.password(bcrypt.compareSync(password, userFreelancer.password)) && telephoneNumber == userFreelancer.telephoneNumber && nationalId == userFreelancer.nationalId){
-        return res.status(401).json({
-          status: 'fail',
-          message: 'nothing change!'
-        })
-      }
-    }
+  
 
      if(usernameCheck.lenghth > 0){
       return res.status(401).json({
@@ -158,8 +146,7 @@ exports.updateProfile = async(req,res)=>{
     }
       if(userConsumer){
         const hashedPassword = await bcrypt.hashSync(password,10)
-        const convertTelephone = parseInt(telephoneNumber)
-        usersTable.update({fullName,email,password:hashedPassword,telephoneNumber,nationalId},
+        usersTable.update({fullName,password:hashedPassword,telephoneNumber,nationalId},
           {where: {username}});
            res.status(200).json({
             status:'success',
@@ -168,7 +155,7 @@ exports.updateProfile = async(req,res)=>{
       }
       if(userFreelancer){
         const hashedPassword = await bcrypt.hashSync(password,10)
-        freelancerTable.update({fullName,email,password:hashedPassword,telephoneNumber,nationalId},
+        freelancerTable.update({fullName,password:hashedPassword,telephoneNumber,nationalId},
           {where:{username}}
           );
            res.status(200).json({
@@ -184,7 +171,3 @@ exports.updateProfile = async(req,res)=>{
       });
     }
   };
-exports.updateProfile = async (req, res)=>{
-  const {name,username,email,password} = req.body;
-  
-}
