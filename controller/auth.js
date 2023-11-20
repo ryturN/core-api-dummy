@@ -1,6 +1,8 @@
 const {LocalStorage} = require('node-localstorage')
+
 const db = require('../dbconfig/index');
 localStorage = new LocalStorage('./scratch');
+
 const nodemailer = require('nodemailer');
 const dotenv= require('dotenv');
 const jwt = require('jsonwebtoken')
@@ -22,7 +24,7 @@ const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/fu
 //login 
 exports.login = async(req,res)=>{
   try{
-    const {username,email,password,options}=req.body
+    const {username, email,password,options}=req.body
     const user = await findUser(username,password);
     const freelancer = await findFreelancer(username,password)
 
