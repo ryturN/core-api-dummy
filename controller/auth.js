@@ -155,6 +155,7 @@ exports.verify = async (req,res)=>{
           }; //save what user input into "data storage"
           const verificationCode = Math.floor(10000 + Math.random() * 90000); //for verification code
           const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10m'}); //save data storage and verification code into jwt with name "save data"
+          const emailCheck= await usersTable.findAll({where: {email}}) //then if username is not taken , then checking email if already taken then status fail
           res.cookie('saveData',saveData,{
           httpOnly: true,
           maxAge: 300000,
@@ -162,6 +163,8 @@ exports.verify = async (req,res)=>{
         })
       const usernameCheck = await usersTable.findAll({where : {username}}) //checking username Users
       const usernameCheckF = await freelancerTable.findAll({where: {username}}) //checking username Freelancer
+      const emailCheckF= await freelancerTable.findAll({where: {email}}) //if username is not taken , then checking email is already taken or not , if taken then status fail
+
       if(options == 'consumer'){ //if options "consumer"
         if (usernameCheck.length > 0) { //checking username if already taken then status fail
           return res.status(401).json({
@@ -169,8 +172,19 @@ exports.verify = async (req,res)=>{
             message: 'username already taken!' 
           });
         }
-        const emailCheck= await usersTable.findAll({where: {email}}) //then if username is not taken , then checking email if already taken then status fail
+        if(usernameCheckF.length > 0){
+          return res.status(401).json({
+            status: 'fail',
+            message: 'username already taken!'
+          })
+        }
         if(emailCheck.length > 0){
+          return res.status(401).json({
+            status: 'fail',
+            message: 'email already taken!'
+          })
+        }
+        if(emailCheckF.length > 0){
           return res.status(401).json({
             status: 'fail',
             message: 'email already taken!'
@@ -184,8 +198,19 @@ exports.verify = async (req,res)=>{
             message: 'username already taken!'
           });
         }
-        const emailCheckF= await freelancerTable.findAll({where: {email}}) //if username is not taken , then checking email is already taken or not , if taken then status fail
+        if (usernameCheck.length > 0) { //checking username if already taken then status fail
+          return res.status(401).json({ 
+            status: 'fail',
+            message: 'username already taken!'
+          });
+        }
         if(emailCheckF.length > 0){
+          return res.status(401).json({
+            status: 'fail',
+            message: 'email already taken!'
+          })
+        }
+        if(emailCheck.length > 0){
           return res.status(401).json({
             status: 'fail',
             message: 'email already taken!'
