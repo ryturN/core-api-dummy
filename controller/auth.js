@@ -84,61 +84,61 @@ exports.login = async(req,res)=>{
 
 //verify is the code same or not
 }
-exports.verify = async (req,res)=>{
+exports.verify = async (req,res) => {
   const {userVerificationCode,email} = req.body
-  const cookie = await req.cookies;
-    if (!cookie.saveData) {
-      return res.json({status: 'fail',message: 'fail'});
-    }
-    const data = cookie.saveData;
-    await jwt.verify(data, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
-    if(err){
-      return res.status(404)
-      .json({
-        status: 'fail',
-        message: err
-      })
-    }
-    const dataStorage = decoded.dataStorage
-    const verificationCode = decoded.verificationCode
-    const parsedVerificationCode = parseInt(verificationCode);
-    const parsedUserVerificationCode = parseInt(userVerificationCode);
-    if(email !== dataStorage.email){
-      return res.status(402).json({
-        status: 'fail',
-        message: 'email tidak sama!'
-      })
-    }
-    if(parsedUserVerificationCode === parsedVerificationCode){
-      if(dataStorage.options == "consumer"){
-        const consumerId = 'consumer_'+nanoid(20)
-        createUser(
-          consumerId,
+  const cookie = req.cookies;
+  if (!cookie.saveData) {
+    return res.json({status: 'fail',message: 'fail'});
+  }
+  const data = cookie.saveData;
+  await jwt.verify(data, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+  if(err){
+    return res.status(404)
+    .json({
+      status: 'fail',
+      message: err
+    })
+  }
+  const dataStorage = decoded.dataStorage
+  const verificationCode = decoded.verificationCode
+  const parsedVerificationCode = parseInt(verificationCode);
+  const parsedUserVerificationCode = parseInt(userVerificationCode);
+  if(email !== dataStorage.email){
+    return res.status(402).json({
+      status: 'fail',
+      message: 'email tidak sama!'
+    })
+  }
+  if(parsedUserVerificationCode === parsedVerificationCode){
+    if(dataStorage.options == "consumer"){
+      const consumerId = 'consumer_'+nanoid(20)
+      createUser(
+        consumerId,
+        dataStorage.fullName,
+        dataStorage.username,
+        dataStorage.email,
+        dataStorage.password,
+        )
+        return res.status(201).send(dataStorage)
+      }
+      if(dataStorage.options == "freelancer"){
+        const freelancer_id = 'freelancer_'+nanoid(20)
+        createFreelancer(
+          freelancer_id,
           dataStorage.fullName,
           dataStorage.username,
           dataStorage.email,
-          dataStorage.password,
+          dataStorage.password
           )
-          return res.status(201).send(dataStorage)
-        }
-        if(dataStorage.options == "freelancer"){
-          const freelancer_id = 'freelancer_'+nanoid(20)
-          createFreelancer(
-            freelancer_id,
-            dataStorage.fullName,
-            dataStorage.username,
-            dataStorage.email,
-            dataStorage.password
-            )
-            res.status(201).send(dataStorage);
+          res.status(201).send(dataStorage);
 
-          }
-        }else{
-          res.json({
-            status: 'fail',
-            message: 'your verification Code does not match!'})
-          }
-        })
+        }
+      }else{
+        res.json({
+          status: 'fail',
+          message: 'your verification Code does not match!'})
+        }
+      })
         }
         
       
@@ -154,7 +154,7 @@ exports.verify = async (req,res)=>{
             options: req.body.options
           }; //save what user input into "data storage"
           const verificationCode = Math.floor(10000 + Math.random() * 90000); //for verification code
-          const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10m'}); //save data storage and verification code into jwt with name "save data"
+          const saveData = jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10m'}); //save data storage and verification code into jwt with name "save data"
           res.cookie('saveData',saveData,{
           httpOnly: true,
           maxAge: 300000,
