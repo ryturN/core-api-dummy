@@ -26,7 +26,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(express.static('assets'));
 
-const port = process.env.PORT || 2345
+const port = process.env.PORT || 5000
 app.use('/',router);
 app.use('/control', controlpanel_api)
 app.use('/projects', projects_api)
