@@ -21,7 +21,7 @@
 }
 
 
-#main_content {
+.scrollbar {
     --sb-track-color: #949494;
     --sb-thumb-color: #656565;
     --sb-size: 5px;
@@ -30,16 +30,16 @@
                      var(--sb-track-color);
   }
   
-  #main_content::-webkit-scrollbar {
+  .scrollbar::-webkit-scrollbar {
     width: var(--sb-size) 
   }
   
-  #main_content::-webkit-scrollbar-track {
+  .scrollbar::-webkit-scrollbar-track {
     background: var(--sb-track-color);
     border-radius: 10px;
   }
   
-  #main_content::-webkit-scrollbar-thumb {
+  .scrollbar::-webkit-scrollbar-thumb {
     background: var(--sb-thumb-color);
     border-radius: 10px;
     
