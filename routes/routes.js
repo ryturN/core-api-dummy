@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const  resetPassword  = require('../controller/resetPassword.js');
 const freelancerTable = require('../models/tables/freelancerTable.js');
 const usersTable = require('../models/tables/usersTable.js');
-
+const projects = require('../controller/projects.js')
 const router = express.Router();
 
 //  ============================= GET ROUTER ========================================== //
@@ -57,25 +57,29 @@ router.get('/verify',(req,res)=>{
           message: 'See You Later Nerd'})
   })
   
+  
+  
+  //  ============================= POST ROUTER ========================================== //
+  
+  router.post('/register',auth.register)
+  router.post('/verifyUser',auth.verify)
+  router.post('/login', auth.login)
+  router.all('/profile/edit',profile.updateProfile);
+  router.post('/forget',resetPassword.forgetPassword);
+  router.post('/forget/verify', resetPassword.verifyCode)
+  router.post('/forget/verify/new', resetPassword.enterNewPassword)
+  router.post('/addSkill',profile.addSkill);
+  router.post('/newProject',projects.newProjectHandler)
+  router.post('/deleteProject',projects.deleteProjectsHandler)
+  router.get('/skills/get',profile.getSkills)
+  
+  
   router.get('*',(req,res)=>{
       res.status(404).json({
           status: 'fail',
           message: 'u got wrong address bro'
       })
   })
-
-
-//  ============================= POST ROUTER ========================================== //
-
-router.post('/register',auth.register)
-router.post('/verifyUser',auth.verify)
-router.post('/login', auth.login)
-router.all('/profile/edit',profile.updateProfile);
-router.post('/forget',resetPassword.forgetPassword);
-router.post('/forget/verify', resetPassword.verifyCode)
-router.post('/forget/verify/new', resetPassword.enterNewPassword)
-
-
 
 
 module.exports =router;

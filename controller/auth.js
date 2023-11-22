@@ -16,7 +16,8 @@ const freelancerTable = require('../models/tables/freelancerTable');
 
 // Functions
 const {createUser,findUser} = require('../models/functions/usersFunction');
-const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction')
+const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction');
+const { createUsersRecord, createFreelanceRecord } = require('../models/functions/createRecords');
 
 
 
@@ -32,8 +33,11 @@ exports.login = async(req,res)=>{
 
     //checking if Consumer 
     if(user){
+      const getId = user.consumerId
+      console.log(getId)
+      createUsersRecord(getId)
       const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
-       return res.cookie('verifyToken',token,{
+      return res.cookie('verifyToken',token,{
         httpOnly: true,
         maxAge: 24*60*60*1000,
         secure: true
@@ -51,7 +55,11 @@ exports.login = async(req,res)=>{
       });  
     }
     //checking if Freelancer
-      if(freelancer){
+
+    if(freelancer){
+        const getId = freelancer.freelancer_id
+        console.log(getId)
+        createFreelanceRecord(getId)
         const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
         return res.cookie('verifyToken',token,{
           httpOnly: true,
@@ -166,51 +174,28 @@ exports.verify = async (req,res)=>{
       const emailCheckF= await freelancerTable.findAll({where: {email}}) //if username is not taken , then checking email is already taken or not , if taken then status fail
 
       if(options == 'consumer'){ //if options "consumer"
-        if (usernameCheck.length > 0) { //checking username if already taken then status fail
+        if (usernameCheck.length > 0 || usernameCheckF.length) { //checking username if already taken then status fail
           return res.status(401).json({
             status: 'fail',
             message: 'username already taken!' 
           });
         }
-        if(usernameCheckF.length > 0){
-          return res.status(401).json({
-            status: 'fail',
-            message: 'username already taken!'
-          })
-        }
-        if(emailCheck.length > 0){
+        if(emailCheck.length > 0 || emailCheckF.length){
           return res.status(401).json({
             status: 'fail',
             message: 'email already taken!'
           })
         }
-        if(emailCheckF.length > 0){
-          return res.status(401).json({
-            status: 'fail',
-            message: 'email already taken!'
-          })
-        }
+
       }
       if(options == 'freelancer'){ //if option "consumer"
-        if (usernameCheckF.length > 0) { //checking username if already taken then status fail
+        if (usernameCheckF.length > 0 || usernameCheckF.length) { //checking username if already taken then status fail
           return res.status(401).json({ 
             status: 'fail',
             message: 'username already taken!'
           });
         }
-        if (usernameCheck.length > 0) { //checking username if already taken then status fail
-          return res.status(401).json({ 
-            status: 'fail',
-            message: 'username already taken!'
-          });
-        }
-        if(emailCheckF.length > 0){
-          return res.status(401).json({
-            status: 'fail',
-            message: 'email already taken!'
-          })
-        }
-        if(emailCheck.length > 0){
+        if(emailCheckF.length > 0 || emailCheckF.length){
           return res.status(401).json({
             status: 'fail',
             message: 'email already taken!'
@@ -236,7 +221,18 @@ exports.verify = async (req,res)=>{
           to: req.body.email,
           subject: "Verification Code",
           text: `Your verification code is ${verificationCode}.`,
-          html: `<b>Your verification code is ${verificationCode}.</b>`,
+          html: `
+          <hr>
+          <h1 style: "text-align: center;"> Soft Skill</h1>
+          <hr>
+          <br>
+          <br>Hai ${dataStorage.username}<br>
+          <br><b>Your Verification code is ${verificationCode}<b></br>
+          <br>
+          <br>
+          <hr>
+          <br><a>Please don't reply to this email</a></footer>
+          `,
         };
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {

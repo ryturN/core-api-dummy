@@ -11,4 +11,7 @@ photosTable.sync().then(() => {
     console.log('Photos table is synced!')
 });
 
+db.sync().then(()=>{
+    console.log('dataSkills sync!')
+})
 module.exports = photosTable;

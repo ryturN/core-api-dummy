@@ -25,7 +25,8 @@ const newProject = async (data) => {
         project_name: project_name,
         project_desc: project_desc,
         user_id: user_id,
-        deadline: deadline
+        deadline: deadline,
+        project_category: project_category
     };
     projectsTable.create(newData);
     return true;

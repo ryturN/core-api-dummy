@@ -43,9 +43,6 @@ const freelancerTable = db.define('freelancer', {
         type: DataTypes.INTEGER,
         defaultValue: 1,
     },
-    skills: {
-        type: DataTypes.STRING,
-    },
     socialMedia: {
         type: DataTypes.STRING
     },

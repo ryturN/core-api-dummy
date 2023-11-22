@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Sequelize } = require("sequelize");
 const db = require("../../dbconfig");
 
 const projectsTable = db.define('projects', {
@@ -16,14 +16,14 @@ const projectsTable = db.define('projects', {
         type: DataTypes.STRING
     },
     deadline: {
-        type: DataTypes.DATE
+        type: DataTypes.DATEONLY
     },
     project_category: {
-        type: DataTypes.STRING
+        type: DataTypes.ARRAY(Sequelize.TEXT)
     }
 });
 
-projectsTable.sync({ alter: true }).then(() => {
+projectsTable.sync().then(() => {
     console.log('Projects table is synchronized!')
 });
 

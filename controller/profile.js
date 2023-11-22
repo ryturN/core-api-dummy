@@ -9,10 +9,12 @@ const bcrypt = require('bcrypt')
 // Tables
 const usersTable = require('../models/tables/usersTable');
 const freelancerTable = require('../models/tables/freelancerTable');
+const skillsTables = require('../models/tables/skills')
 
 // Functions
 const {createUser,findUser,updateUser} = require('../models/functions/usersFunction');
 const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction');
+const createSkills = require('../models/functions/createSkills')
 
 exports.profileUsers = async(req,res)=>{
   const { username } = req.params;
@@ -48,7 +50,7 @@ exports.profileUsers = async(req,res)=>{
           role: 'freelancer'
         });
       }
-      if(!user && !freelancer){
+      if(!user || !freelancer){
        return res.status(404).json({ message: 'User tidak ditemukan!' });
       }
     } catch (error) {
@@ -171,3 +173,87 @@ exports.updateProfile = async(req,res)=>{
       });
     }
   };
+
+  exports.addSkill = async(req,res)=>{
+    try {
+      const cookie = await req.cookies;
+      const skills = req.body.skills
+      const token = cookie.verifyToken;
+      
+      if (!cookie.verifyToken) {
+        return res.status(402).json({
+          status: 'fail',
+          message: 'unauthorized!'
+        });
+      }
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+      if (err) {
+        return res.redirect('/');
+      }
+      const username = decoded.username
+      const freelancer = await freelancerTable.findOne({where:{username}})
+      const getId = freelancer.freelancer_id
+      console.log(getId)
+      if(!freelancer){
+        return res.status(404).json({
+          status: 'fail',
+          message: 'u are not allowed!'
+        })
+      }  
+      createSkills(getId,skills)
+      res.status(202).json({
+        status: 'success',
+          message: 'Skill Successfully Add!',
+          data: {
+            skill: skills,
+            id : getId
+          }
+        })
+    })
+  } catch (error) {
+    return res.status(500).json({
+      status: 'fail',
+      message: 'Internal server error'
+    });
+  
+  }
+}
+
+exports.getSkills = async(req,res)=>{
+  try{
+    const cookie = await req.cookies
+    if(!cookie.verifyToken){
+      return res.status(402)
+      .json({
+        status: 'fail',
+        message: 'unauthorized!'
+      })
+    }
+    const token = cookie.verifyToken
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+      if (err) {
+        return res.redirect('/');
+      }
+      const username = decoded.username
+      const freelancer = await freelancerTable.findOne({where:{username}})
+      const freelancerId = freelancer.freelancer_id
+      const getSkill = await skillsTables.findAll({attributes: ['freelancerId','skills'],where:{freelancerId}})
+      if(getSkill){
+        return res.status(202)
+        .json({
+          status:'success',
+          message: 'successfully get skills!',
+          data:{
+            getSkill
+          }
+        })
+      }
+    })
+  }catch(err){
+    return res.status(500).json({
+      status:'fail',
+      message: 'Internal server error'
+    })
+  }
+}
