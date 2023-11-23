@@ -7,7 +7,8 @@ const controlpanel_api = express.Router()
 .post('/login', adminLoginHandler)
 
 .get('/testport', (req, res) => {
-    return res.send(process.env.PORT);
+    return res
+    .json({message: process.env.PORT})
 })
 
 .get('/data/projects', (req, res) => {
