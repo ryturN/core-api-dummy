@@ -13,7 +13,7 @@ const loggedFreelancerRecords = db.define('freelancerRecords',{
     loggedRecord: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
-    },
+    }, 
 },
 {
     freezeTableName: true,

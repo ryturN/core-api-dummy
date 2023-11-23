@@ -57,7 +57,6 @@ router.get('/verify',(req,res)=>{
           message: 'See You Later Nerd'})
   })
   
-<<<<<<< HEAD
   
   
   //  ============================= POST ROUTER ========================================== //
@@ -81,8 +80,6 @@ router.get('/verify',(req,res)=>{
           message: 'u got wrong address bro'
       })
   })
-=======
->>>>>>> 0b016c0a635a6a4001f6da36b56fe1cf56542577
 
 
 module.exports =router;
