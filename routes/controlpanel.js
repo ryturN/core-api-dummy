@@ -19,14 +19,29 @@ const controlpanel_api = express.Router()
     .render('control/data/projects/projects_edit', {data});
 })
 
-.get('/ui', (req, res) => {
-    return res
-    .render('control/ui/home');
-})
+
 
 .get('/data/user', (req, res) => {
     return res
     .render('control/data/user/user');
+})
+
+
+// UI
+
+.get('/ui/freelancer/home', (req, res) => {
+    return res
+    .render('control/ui/freelancer/home');
+})
+
+.get('/ui/freelancer/projects', (req, res) => {
+    return res
+    .render('control/ui/freelancer/projects');
+})
+
+.get('/ui/user/projects', (req, res) => {
+    return res
+    .render('control/ui/user/projects')
 })
 
 .get('/*', (req, res) => {

@@ -74,12 +74,7 @@ router.get('/verify',(req,res)=>{
   router.get('/skills/get',profile.getSkills)
   
   
-  router.get('*',(req,res)=>{
-      res.status(404).json({
-          status: 'fail',
-          message: 'u got wrong address bro'
-      })
-  })
+  
 
 
 module.exports =router;
