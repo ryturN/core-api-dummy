@@ -1,27 +1,31 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const db = require("../../dbconfig/index");
 
-const loggedUsersRecord = db.define('usersRecords',{
+const loggedRecords = db.define('loggedRecords',{
     nomor: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
-    consumersId: {
+    ID: {
+        type: DataTypes.STRING,
+    },
+    role: {
         type: DataTypes.STRING,
     },
     loggedRecord: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
-    },
+    }, 
 },
 {
     freezeTableName: true,
     createdAt: false,
     updatedAt: false
 })
-loggedUsersRecord.sync().then(()=>{
-    console.log('db has sync!')
+
+loggedRecords.sync({alter: true}).then(()=>{
+    console.log('skills has sync!')
 })
 
-module.exports = loggedUsersRecord
+module.exports = loggedRecords

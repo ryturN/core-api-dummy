@@ -1,15 +1,11 @@
-const loggedFreelancerRecords = require('../tables/loggedFreelancerRecords');
-const loggedUsersRecord = require('../tables/loggedUsersRecord');
+const loggedRecord = require('../tables/loggedRecords');
 
-const createUsersRecord = async function (getId){
-    loggedUsersRecord.create({
-        consumersId:getId,
-    })
-}
-const createFreelanceRecord = async function (getId){
-    loggedFreelancerRecords.create({
-        freelancerId:getId,
+
+const createRecords = async function (ID,role){
+    loggedRecord.create({
+        ID,
+        role:role
     })
 }
 
-module.exports = {createUsersRecord,createFreelanceRecord}
+module.exports = createRecords

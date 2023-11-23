@@ -17,7 +17,7 @@ const freelancerTable = require('../models/tables/freelancerTable');
 // Functions
 const {createUser,findUser} = require('../models/functions/usersFunction');
 const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction');
-const { createUsersRecord, createFreelanceRecord } = require('../models/functions/createRecords');
+const createRecords  = require('../models/functions/createRecords');
 
 
 
@@ -33,9 +33,11 @@ exports.login = async(req,res)=>{
 
     //checking if Consumer 
     if(user){
-      const getId = user.consumerId
-      console.log(getId)
-      createUsersRecord(getId)
+      const ID = user.consumerId
+      const role = "consumer"
+      console.log(role)
+      console.log(ID)
+      createRecords(ID,role)
       const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
       return res.cookie('verifyToken',token,{
         httpOnly: true,
@@ -57,9 +59,10 @@ exports.login = async(req,res)=>{
     //checking if Freelancer
 
     if(freelancer){
-        const getId = freelancer.freelancer_id
-        console.log(getId)
-        createFreelanceRecord(getId)
+        const ID = freelancer.freelancer_id
+        const role = "freelancer"
+        console.log(ID)
+        createRecords(ID,role)
         const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
         return res.cookie('verifyToken',token,{
           httpOnly: true,
