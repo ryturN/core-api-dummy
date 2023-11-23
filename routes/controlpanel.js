@@ -29,6 +29,21 @@ const controlpanel_api = express.Router()
 
 // UI
 
+.get('/ui', (req, res) => {
+    return res
+    .render('control/ui/menu');
+})
+
+.get('/ui/freelancer', (req, res) => {
+    return res
+    .redirect('/control/ui')
+})
+
+.get('/ui/user', (req, res) => {
+    return res
+    .redirect('/control/ui')
+})
+
 .get('/ui/freelancer/home', (req, res) => {
     return res
     .render('control/ui/freelancer/home');
@@ -37,6 +52,11 @@ const controlpanel_api = express.Router()
 .get('/ui/freelancer/projects', (req, res) => {
     return res
     .render('control/ui/freelancer/projects');
+})
+
+.get('/ui/freelancer/profile', (req, res) => {
+    return res
+    .render('control/ui/freelancer/profile');
 })
 
 .get('/ui/user/projects', (req, res) => {
