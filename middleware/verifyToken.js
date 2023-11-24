@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 // Tables
 const freelancerTable = require('../models/tables/freelancerTable');
 const usersTable = require('../models/tables/usersTable');
+const projectsTable = require('../models/tables/projectsTable');
 
 
 
@@ -21,21 +22,36 @@ exports.verificationToken = async (req, res) => {
       const username = decoded.username
       const userConsumer = await usersTable.findOne({where: {username}})
       const userFreelancer = await freelancerTable.findOne({where: {username}})
+      const project = await projectsTable.findAll({attributes:["user_id","project_name","project_desc","deadline","project_category"]});
       if(userConsumer){
         res.json({
-              name : userConsumer.fullName,
-              username: userConsumer.username,
-              email: userConsumer.email,
-              role: 'consumer'
+              status: 'success',
+              message: '',
+              dataUsers:{
+                name : userConsumer.fullName,
+                username: userConsumer.username,
+                email: userConsumer.email,
+                role: 'consumer'
+              },
+              dataProject:{
+                project
+              }
             });
         }
         if(userFreelancer){
             res.json({
-                name: userFreelancer.fullName,
-                username: userFreelancer.username,
-                email: userFreelancer.email,
-                role: 'freelancer'
-            })
+                status: 'success',
+                message: '',
+                dataUsers:{
+                  name: userFreelancer.fullName,
+                  username: userFreelancer.username,
+                  email: userFreelancer.email,
+                  role: 'freelancer'
+                },
+                dataProject:{
+                  project
+                }
+              })
         }
     });
 };

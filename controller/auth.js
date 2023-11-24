@@ -93,9 +93,11 @@ exports.login = async(req,res)=>{
 } 
 
 
-//verify is the code same or not
 }
+//verify is the code same or not
 exports.verify = async (req,res) => {
+  try{
+
   const {userVerificationCode,email} = req.body
   const cookie = req.cookies;
   if (!cookie.saveData) {
@@ -141,16 +143,22 @@ exports.verify = async (req,res) => {
           dataStorage.email,
           dataStorage.password
           )
-          res.status(201).send(dataStorage);
+          return res.status(201).send(dataStorage);
 
         }
-      }else{
-        res.json({
+      }
+        return res.json({
           status: 'fail',
           message: 'your verification Code does not match!'})
-        }
-      })
-        }
+        })
+      }catch(err){
+        return res.status(500)
+        .json({
+          status: 'fail',
+          message: 'internal status error' + err
+        })
+      }
+    }
         
       
         exports.register = async (req,res)=>{
@@ -165,11 +173,11 @@ exports.verify = async (req,res) => {
             options: req.body.options
           }; //save what user input into "data storage"
           const verificationCode = Math.floor(10000 + Math.random() * 90000); //for verification code
-          const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10m'}); //save data storage and verification code into jwt with name "save data"
+          const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '120s'}); //save data storage and verification code into jwt with name "save data"
           const emailCheck= await usersTable.findAll({where: {email}}) //then if username is not taken , then checking email if already taken then status fail
           res.cookie('saveData',saveData,{
           httpOnly: true,
-          maxAge: 300000,
+          maxAge: 120000,
           secure: true  
         })
       const usernameCheck = await usersTable.findAll({where : {username}}) //checking username Users
