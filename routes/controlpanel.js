@@ -6,6 +6,11 @@ const controlpanel_api = express.Router()
 .get('/login', adminLoginView)
 .post('/login', adminLoginHandler)
 
+.get('/testport', (req, res) => {
+    return res
+    .json({message: process.env.PORT})
+})
+
 .get('/data/projects', (req, res) => {
     return res
     .render('control/data/projects/projects')
