@@ -14,8 +14,8 @@ const usersTable = require('../models/tables/usersTable');
 const freelancerTable = require('../models/tables/freelancerTable');
 
 // Functions
-const {createUser,findUser} = require('../models/functions/usersFunction');
-const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction');
+const {createUser,findUser, usernameConsumer, emailConsumer} = require('../models/functions/usersFunction');
+const {createFreelancer,updateFreelancer,findFreelancer, usernameFreelancer, emailFreelancer} = require('../models/functions/freelancerFunction');
 const createRecords  = require('../models/functions/createRecords');
 const  {mailOptions,transporter}  = require('../middleware/email');
 
@@ -196,15 +196,15 @@ exports.verify = async (req,res) => {
           }; //save what user input into "data storage"
           const verificationCode = Math.floor(10000 + Math.random() * 90000); //for verification code
           const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '120s'}); //save data storage and verification code into jwt with name "save data"
-          const emailCheck= await usersTable.findAll({where: {email}}) //then if username is not taken , then checking email if already taken then status fail
           res.cookie('saveData',saveData,{
-          httpOnly: true,
-          maxAge: 120000,
-          secure: true  
-        })
-      const usernameCheck = await usersTable.findAll({where : {username}}) //checking username Users
-      const usernameCheckF = await freelancerTable.findAll({where: {username}}) //checking username Freelancer
-      const emailCheckF= await freelancerTable.findAll({where: {email}}) //if username is not taken , then checking email is already taken or not , if taken then status fail
+            httpOnly: true,
+            maxAge: 120000,
+            secure: true  
+          })
+          const usernameCheck = await usernameConsumer(username) //checking username Users
+          const usernameCheckF = await usernameFreelancer(username)
+          const emailCheck= await emailConsumer(email) //then if username is not taken , then checking email if already taken then status fail
+          const emailCheckF= await emailFreelancer(email) //if username is not taken , then checking email is already taken or not , if taken then status fail
 
       if(options == 'consumer'){ //if options "consumer"
         if (usernameCheck.length > 0 || usernameCheckF.length) { //checking username if already taken then status fail
@@ -222,13 +222,13 @@ exports.verify = async (req,res) => {
 
       }
       if(options == 'freelancer'){ //if option "consumer"
-        if (usernameCheckF.length > 0 || usernameCheckF.length) { //checking username if already taken then status fail
+        if (usernameCheckF.length > 0 || usernameCheck.length) { //checking username if already taken then status fail
           return res.status(401).json({ 
             status: 'fail',
             message: 'username already taken!'
           });
         }
-        if(emailCheckF.length > 0 || emailCheckF.length){
+        if(emailCheckF.length > 0 || emailCheck.length){
           return res.status(401).json({
             status: 'fail',
             message: 'email already taken!'
@@ -238,7 +238,7 @@ exports.verify = async (req,res) => {
       if(password !== confirmPassword){ //if username & email is already checking and both not taken , then checking password user and confirm passowrd is match or not , if not then status fail 
         return res.status(401).send('Password & Confirm Password Tidak Sama!');
       }
-      
+
       // sending to mailOptions Function
        transporter.sendMail(await mailOptions(email,username,verificationCode),  (error, info) => {
         if (error) {

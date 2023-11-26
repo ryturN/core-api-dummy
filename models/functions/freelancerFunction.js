@@ -38,8 +38,33 @@ const findFreelancer = async function(username, password) {
     }
 };
 
+const usernameFreelancer = async function(username){
+    try{
+        const user = await freelancerTable.findAll({where: {username}});
+        if(user){
+            return user;
+        }
+    }catch(error){
+        console.log(`internal server error`,error );
+        throw error;
+    }
+}
+
+const emailFreelancer = async function(email){
+    try{
+        const user = await freelancerTable.findAll({where: {email}});
+        if(user){
+            return user;
+        }
+    }catch(error){
+        console.log(`internal server error`,error );
+        throw error;
+    }
+}
 module.exports = {
     createFreelancer,
     updateFreelancer,
-    findFreelancer
+    findFreelancer,
+    usernameFreelancer,
+    emailFreelancer
 }

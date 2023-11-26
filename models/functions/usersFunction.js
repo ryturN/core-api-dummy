@@ -29,8 +29,34 @@ const findUser = async function(username, password,email) {
     }
 };
 
+const usernameConsumer = async function(username){
+    try{
+        const user = await usersTable.findAll({where: {username}});
+        if(user){
+            return user;
+        }
+    }catch(error){
+        console.log(`internal server error`,error );
+        throw error;
+    }
+}
+
+const emailConsumer = async function(email){
+    try{
+        const user = await usersTable.findAll({where: {email}});
+        if(user){
+            return user;
+        }
+    }catch(error){
+        console.log(`internal server error`,error );
+        throw error;
+    }
+}
+
 module.exports= {
     createUser,
     findUser,
-    updateUser
+    updateUser,
+    usernameConsumer,
+    emailConsumer
 };
