@@ -14,17 +14,10 @@ const router = express.Router();
 
 
 router.get('/', async (req, res) => {
-  const cookie = await req.cookies;
-    if (!cookie.verifyToken) {
-      return res.render('index');
-    }
-    const token = cookie.verifyToken;
-    await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
-      if (err) {
-        return res.render('index');
-      }
-      return res.redirect('/home')
-    })
+  res.status(202).json({
+    status: 'sucess',
+    message: 'API connected!'
+  })
   });
 
   router.get('/home', verify.verificationToken);

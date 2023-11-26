@@ -237,6 +237,15 @@ exports.getSkills = async(req,res)=>{
       }
       const username = decoded.username
       const freelancer = await freelancerTable.findOne({where:{username}})
+      if(!freelancer){
+        return res.status(402).json({
+          status: 'fail',
+          message: 'unauthorized!',
+          data: {
+            data: null
+          }
+        })
+      }
       const freelancerId = freelancer.freelancer_id
       const getSkill = await skillsTables.findAll({attributes: ['freelancerId','skills'],where:{freelancerId}})
       if(getSkill){

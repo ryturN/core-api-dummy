@@ -3,7 +3,6 @@ const {LocalStorage} = require('node-localstorage')
 const db = require('../dbconfig/index');
 localStorage = new LocalStorage('./scratch');
 
-const nodemailer = require('nodemailer');
 const dotenv= require('dotenv');
 const jwt = require('jsonwebtoken')
 const { nanoid } = require('nanoid') 
@@ -18,6 +17,7 @@ const freelancerTable = require('../models/tables/freelancerTable');
 const {createUser,findUser} = require('../models/functions/usersFunction');
 const {createFreelancer,updateFreelancer,findFreelancer} = require('../models/functions/freelancerFunction');
 const createRecords  = require('../models/functions/createRecords');
+const  {mailOptions,transporter}  = require('../middleware/email');
 
 
 
@@ -47,13 +47,17 @@ exports.login = async(req,res)=>{
       .status(201).setHeader('Content-Type', 'application/json')
       //sending data to FE
       .json({
-        fullName: user.name,
-        username: user.username,
-        email: user.email,
-        role: "consumer",
-        point: user.specialPoint,
-        level: user.level,
-        token: token
+        status: "success",
+        message: "",
+        data: {
+          fullName: user.name,
+          username: user.username,
+          email: user.email,
+          role: "consumer",
+          point: user.specialPoint,
+          level: user.level,
+          token: token
+        }
       });  
     }
     //checking if Freelancer
@@ -132,7 +136,16 @@ exports.verify = async (req,res) => {
         dataStorage.email,
         dataStorage.password,
         )
-        return res.status(201).send(dataStorage)
+        return res.status(201).json({
+          status: 'sucess',
+          message: 'register successfully!',
+          data:{
+            fullName: dataStorage.fullName,
+            username: dataStorage.username,
+            email: dataStorage.email,
+            role: "consumer",
+          }
+        })
       }
       if(dataStorage.options == "freelancer"){
         const freelancer_id = 'freelancer_'+nanoid(20)
@@ -143,7 +156,16 @@ exports.verify = async (req,res) => {
           dataStorage.email,
           dataStorage.password
           )
-          return res.status(201).send(dataStorage);
+          return res.status(201).json({
+            status: 'success',
+            message: 'register successfully',
+            data:{
+              fullName: dataStorage.fullName,
+              username: dataStorage.username,
+              email : dataStorage.email,
+              role: "freelancer",
+            }
+          });
 
         }
       }
@@ -160,7 +182,7 @@ exports.verify = async (req,res) => {
       }
     }
         
-      
+
         exports.register = async (req,res)=>{
           try{
           const {fullName,username ,email,password,confirmPassword,options}= req.body
@@ -216,49 +238,24 @@ exports.verify = async (req,res) => {
       if(password !== confirmPassword){ //if username & email is already checking and both not taken , then checking password user and confirm passowrd is match or not , if not then status fail 
         return res.status(401).send('Password & Confirm Password Tidak Sama!');
       }
-  
-      //create transporter for sending verif code
-        let transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: `watashiox@gmail.com`,
-            pass:`xtcvwuvoxccwcong`,
-          },
-        });
-        
-      //if username , email , and password already checking ,then sending email verification code to user email 
-        let mailOptions = {
-          from: '"LowerMoon" uppermoon1404@gmail.com',
-          to: req.body.email,
-          subject: "Verification Code",
-          text: `Your verification code is ${verificationCode}.`,
-          html: `
-          <hr>
-          <h1 style: "text-align: center;"> Soft Skill</h1>
-          <hr>
-          <br>
-          <br>Hai ${dataStorage.username}<br>
-          <br><b>Your Verification code is ${verificationCode}<b></br>
-          <br>
-          <br>
-          <hr>
-          <br><a>Please don't reply to this email</a></footer>
-          `,
-        };
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error("Error sending email:", error);
-            return res.send("Error sending email").code(500);
-          }
-          console.log("Message sent: %s", info.messageId);
-        });
-  
-        res.status(202).json({
+      
+      // sending to mailOptions Function
+       transporter.sendMail(await mailOptions(email,username,verificationCode),  (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+          return res.send("Error sending email").code(500);
+        }
+        return console.log("Message sent: %s", info.messageId);
+      });
+        return res.status(202).json({
           status: 'success',
-          username: username,
-          code : verificationCode,
-          role: options,
-          token: saveData
+          message: '',
+          data:{
+            username: username,
+            code : verificationCode,
+            role: options,
+            token: saveData
+          }
   
   
   
