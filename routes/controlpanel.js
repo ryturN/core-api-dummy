@@ -19,9 +19,9 @@ const controlpanel_api = express.Router()
 .get('/data/projects/edit', async (req, res) => {
     const data = {
         id: 'test'
-    };
+    }
     return res
-    .render('control/data/projects/projects_edit', {data});
+    .render('control/data/projects/projects_edit', { data });
 })
 
 

@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const controlpanel_api = require('./routes/controlpanel');
 // const android_api = require('./routes/android');
 const projects_api = require('./routes/projects');
+const cors = require('cors');
 
 
 // try{
@@ -20,6 +21,7 @@ const projects_api = require('./routes/projects');
 
 app.set('view engine', 'ejs');
 
+app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({extended: false}));
