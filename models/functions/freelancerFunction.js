@@ -61,10 +61,23 @@ const emailFreelancer = async function(email){
         throw error;
     }
 }
+
+const emailResetFreelancer = async function(email){
+    try{
+        const user = freelancerTable.findOne({ where: { email } });
+        if (user){
+            return user.email;
+        }
+    }catch(error){
+        console.log(`internal server error`, error);
+        throw error
+    }
+}
 module.exports = {
     createFreelancer,
     updateFreelancer,
     findFreelancer,
     usernameFreelancer,
-    emailFreelancer
+    emailFreelancer,
+    emailResetFreelancer
 }

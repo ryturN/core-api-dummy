@@ -53,10 +53,23 @@ const emailConsumer = async function(email){
     }
 }
 
+const emailReset = async function(email){
+    try{
+        const user = usersTable.findOne({ where: { email } });
+        if (user){
+            return `${user.email}`;
+        }
+    }catch(error){
+        console.log(`internal server error`, error);
+        throw error
+    }
+}
+
 module.exports= {
     createUser,
     findUser,
     updateUser,
     usernameConsumer,
-    emailConsumer
+    emailConsumer,
+    emailReset
 };

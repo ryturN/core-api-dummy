@@ -10,6 +10,7 @@ const bcrypt = require('bcrypt');
 const usersTable = require('../models/tables/usersTable');
 const freelancerTable = require('../models/tables/freelancerTable');
 const { createUser, findUser, updateUser } = require('../models/functions/usersFunction');
+const { transporter } = require('../middleware/email');
 dotenv.config();
 
 exports.forgetPassword = async (req, res) => {
@@ -33,19 +34,11 @@ exports.forgetPassword = async (req, res) => {
         })
     }
 
-// if exist 
-    let transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: `watashiox@gmail.com`,
-                pass: `xtcvwuvoxccwcong`,
-            },
-        });
 
 // if email are for Freelancer
         if(emailFreelancer){
 
-            let mailOptions = {
+            let resetMailOptions = {
                 from: '"LowerMoon" uppermoon1404@gmail.com',
                 to: emailFreelancer.email,
                 subject: "Verification Code",
@@ -53,7 +46,7 @@ exports.forgetPassword = async (req, res) => {
                 html: `<b>Your verification code is ${verificationCode}.</b>`,
             };
             
-            await transporter.sendMail(mailOptions, (error, info) => {
+            await transporter.sendMail(resetMailOptions, (error, info) => {
                 if (error) {
                     console.error("Error sending email:", error);
                     return res.status(500).send("Error sending email");
@@ -70,8 +63,8 @@ exports.forgetPassword = async (req, res) => {
 
 // if email are for Consumer
         if(emailConsumer){
-            
-            let mailOptions = {
+     
+            let resetMailOptions= {
                 from: '"LowerMoon" uppermoon1404@gmail.com',
                 to: emailConsumer.email,
                 subject: "Verification Code",
@@ -79,7 +72,7 @@ exports.forgetPassword = async (req, res) => {
                 html: `<b>Your verification code is ${verificationCode}.</b>`,
             };
             
-            await transporter.sendMail(mailOptions, (error, info) => {
+            await transporter.sendMail(resetMailOptions, (error, info) => {
                 if (error) {
                     console.error("Error sending email:", error);
                     return res.status(500).send("Error sending email");
@@ -94,7 +87,6 @@ exports.forgetPassword = async (req, res) => {
             });
             
         }
-        
         
     }catch(error){
         res.status(505).json({

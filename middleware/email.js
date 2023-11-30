@@ -32,4 +32,10 @@ const mailOptions = async(email,username,verificationCode)=>{
     };
 }
 
+
+
+
+
+
+
 module.exports = {mailOptions,transporter}

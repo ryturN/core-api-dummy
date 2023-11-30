@@ -26,8 +26,10 @@ const  {mailOptions,transporter}  = require('../middleware/email');
 exports.login = async(req,res)=>{
   try{
     const {username, email,password,options}=req.body
+
     const user = await findUser(username,password);
     const freelancer = await findFreelancer(username,password)
+
 
 
 
@@ -65,9 +67,8 @@ exports.login = async(req,res)=>{
     if(freelancer){
         const ID = freelancer.freelancer_id
         const role = "freelancer"
-        console.log(ID)
-        createRecords(ID,role)
         const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
+        createRecords(ID,role)
         return res.cookie('verifyToken',token,{
           httpOnly: true,
           maxAge: 24*60*60*1000,
@@ -207,13 +208,13 @@ exports.verify = async (req,res) => {
           const emailCheckF= await emailFreelancer(email) //if username is not taken , then checking email is already taken or not , if taken then status fail
 
       if(options == 'consumer'){ //if options "consumer"
-        if (usernameCheck.length > 0 || usernameCheckF.length) { //checking username if already taken then status fail
+        if (usernameCheck.length > 0 || usernameCheckF.length > 0) { //checking username if already taken then status fail
           return res.status(401).json({
             status: 'fail',
             message: 'username already taken!' 
           });
         }
-        if(emailCheck.length > 0 || emailCheckF.length){
+        if(emailCheck.length > 0 || emailCheckF.length > 0){
           return res.status(401).json({
             status: 'fail',
             message: 'email already taken!'
@@ -222,13 +223,13 @@ exports.verify = async (req,res) => {
 
       }
       if(options == 'freelancer'){ //if option "consumer"
-        if (usernameCheckF.length > 0 || usernameCheck.length) { //checking username if already taken then status fail
+        if (usernameCheckF.length > 0 || usernameCheck.length > 0) { //checking username if already taken then status fail
           return res.status(401).json({ 
             status: 'fail',
             message: 'username already taken!'
           });
         }
-        if(emailCheckF.length > 0 || emailCheck.length){
+        if(emailCheckF.length > 0 || emailCheck.length > 0){
           return res.status(401).json({
             status: 'fail',
             message: 'email already taken!'
@@ -243,7 +244,9 @@ exports.verify = async (req,res) => {
        transporter.sendMail(await mailOptions(email,username,verificationCode),  (error, info) => {
         if (error) {
           console.error("Error sending email:", error);
-          return res.send("Error sending email").code(500);
+          return res.status(500).json({
+            status: 'fail',
+            message: 'Error sending email'});
         }
         return console.log("Message sent: %s", info.messageId);
       });
