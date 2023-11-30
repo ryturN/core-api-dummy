@@ -186,13 +186,12 @@ exports.verify = async (req,res) => {
 
         exports.register = async (req,res)=>{
           try{
-          const {fullName,username ,email,password,confirmPassword,options}= req.body
+          const {fullName,username ,email,password,options}= req.body
           const dataStorage = {
             fullName : req.body.fullName,
             username : req.body.username,
             email : req.body.email,
             password : req.body.password,
-            confirmPassword : req.body.confirmPassword,
             options: req.body.options
           }; //save what user input into "data storage"
           const verificationCode = Math.floor(10000 + Math.random() * 90000); //for verification code
@@ -235,9 +234,6 @@ exports.verify = async (req,res) => {
             message: 'email already taken!'
           })
         }
-      }
-      if(password !== confirmPassword){ //if username & email is already checking and both not taken , then checking password user and confirm passowrd is match or not , if not then status fail 
-        return res.status(401).send('Password & Confirm Password Tidak Sama!');
       }
 
       // sending to mailOptions Function
