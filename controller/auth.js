@@ -94,8 +94,8 @@ exports.login = async(req,res)=>{
 exports.verify = async (req,res) => {
   try{
   const {userVerificationCode,email} = req.body
-  const data = req.body.saveData
-  await jwt.verify(data, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+  const saveData = req.body.saveData
+  await jwt.verify(saveData, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
   if(err){
     return res.status(404)
     .json({
@@ -221,10 +221,11 @@ exports.verify = async (req,res) => {
        transporter.sendMail(await mailOptions(email,username,verificationCode),  (error, info) => {
         if (error) {
           console.error("Error sending email:", error);
-          return res.status(500).json({
+          res.status(500).json({
             status: 'fail',
             message: 'Error sending email'});
-        }
+          throw error;
+          }
         return console.log("Message sent: %s", info.messageId);
       });
         return res.status(202).json({
