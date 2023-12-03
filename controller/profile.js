@@ -18,12 +18,12 @@ const createSkills = require('../models/functions/createSkills')
 
 exports.profileUsers = async(req,res)=>{
   const { username } = req.params;
-  const cookie = await req.cookies;
+  const verifyToken = req.body.token;
   try {
     const user = await usersTable.findOne({ where: { username } }) 
     const freelancer = await freelancerTable.findOne({where: {username}});
     
-    if (!cookie.verifyToken) {
+    if (!verifyToken) {
 
       return res.status(404).json({
         status: 'fail',
@@ -63,20 +63,13 @@ exports.profileUsers = async(req,res)=>{
   
   exports.profiles = async(req,res)=>{
     try {
-      const cookie = await req.cookies;
-      
-      if (!cookie.verifyToken) {
-        return res.status(402).json({
-          status: 'fail',
-          message: 'unauthorized!'
-        });
-      }
-  
-      const token = cookie.verifyToken;
-  
-      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+      const verifyCode = req.body.token;
+      jwt.verify(verifyCode, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
         if (err) {
-          return res.render('index');
+          return res.status(404).json({
+            status: 'fail',
+            message: 'unauthorized!'
+          });
         }
   
         const username = decoded.username
@@ -117,18 +110,9 @@ exports.profileUsers = async(req,res)=>{
 exports.updateProfile = async(req,res)=>{
   try {
     const {fullName,password,telephoneNumber,nationalId} = req.body;
-    const cookie = await req.cookies;
+    const verifyCode = req.body.token
     
-    if (!cookie.verifyToken) {
-      return res.status(402).json({
-        status: 'fail',
-        message: 'unauthorized!'
-      });
-    }
-
-    const token = cookie.verifyToken;
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+    jwt.verify(verifyCode, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
       if (err) {
         return res.render('index');
       }
@@ -178,16 +162,9 @@ exports.updateProfile = async(req,res)=>{
     try {
       const cookie = await req.cookies;
       const skills = req.body.skills
-      const token = cookie.verifyToken;
-      
-      if (!cookie.verifyToken) {
-        return res.status(402).json({
-          status: 'fail',
-          message: 'unauthorized!'
-        });
-      }
+      const verifyToken = req.body.token;
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+    jwt.verify(verifyToken, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
       if (err) {
         return res.redirect('/');
       }
@@ -222,16 +199,8 @@ exports.updateProfile = async(req,res)=>{
 
 exports.getSkills = async(req,res)=>{
   try{
-    const cookie = await req.cookies
-    if(!cookie.verifyToken){
-      return res.status(402)
-      .json({
-        status: 'fail',
-        message: 'unauthorized!'
-      })
-    }
-    const token = cookie.verifyToken
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+    const verifyToken= req.body.token
+    jwt.verify(verifyToken, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
       if (err) {
         return res.redirect('/');
       }

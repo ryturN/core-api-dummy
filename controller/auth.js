@@ -41,11 +41,6 @@ exports.login = async(req,res)=>{
       console.log(ID)
       createRecords(ID,role)
       const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
-      return res.cookie('verifyToken',token,{
-        httpOnly: true,
-        maxAge: 24*60*60*1000,
-        secure: true
-      })
       .status(201).setHeader('Content-Type', 'application/json')
       //sending data to FE
       .json({
@@ -195,12 +190,6 @@ exports.verify = async (req,res) => {
           }; //save what user input into "data storage"
           const verificationCode = Math.floor(10000 + Math.random() * 90000); //for verification code
           const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '120s'}); //save data storage and verification code into jwt with name "save data"
-          res.cookie('saveData',saveData,{
-            httpOnly: true,
-            maxAge: 120000,
-            secure: true,
-            sameSite: 'none'
-          })
           const usernameCheck = await usernameConsumer(username) //checking username Users
           const usernameCheckF = await usernameFreelancer(username)
           const emailCheck= await emailConsumer(email) //then if username is not taken , then checking email if already taken then status fail
