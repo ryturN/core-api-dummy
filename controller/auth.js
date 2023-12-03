@@ -180,6 +180,16 @@ exports.verify = async (req,res) => {
             password : req.body.password,
             options: req.body.options
           }; //save what user input into "data storage"
+          const isBodyDefined = Object.values(req.body).every(value => typeof value !== "undefined");
+                if(!isBodyDefined) {
+                    return res
+                    .status(404).json({status: "failed", message: "There's nothing to be requested in the body data!"})
+                }
+
+                if(!fullName || !username || !email || !password) {
+                    return res
+                    .status(404).json({status: "failed", message: "There's nothing to be requested in the body data!"})
+                }
           const verificationCode = Math.floor(10000 + Math.random() * 90000); //for verification code
           const saveData = await jwt.sign({ dataStorage,verificationCode }, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '120s'}); //save data storage and verification code into jwt with name "save data"
           const usernameCheck = await usernameConsumer(username) //checking username Users
