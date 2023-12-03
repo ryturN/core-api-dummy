@@ -24,7 +24,7 @@ const  {mailOptions,transporter}  = require('../middleware/email');
 
 //login 
 exports.login = async(req,res)=>{
-  try{
+  // try{
     const {username, email,password,options}=req.body
 
     const user = await findUser(username,password);
@@ -41,9 +41,8 @@ exports.login = async(req,res)=>{
       console.log(ID)
       createRecords(ID,role)
       const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
-      .status(201).setHeader('Content-Type', 'application/json')
       //sending data to FE
-      .json({
+      return res.status(200).json({
         status: "success",
         message: "",
         data: {
@@ -64,10 +63,8 @@ exports.login = async(req,res)=>{
         const role = "freelancer"
         const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
         createRecords(ID,role)
-
-        .status(201).setHeader('Content-Type', 'application/json') 
         // sending the data to the FE
-        .json({
+        return res.status(200).json({
           fullName: freelancer.name,
           username: freelancer.username,
           email: freelancer.email,
@@ -82,11 +79,11 @@ exports.login = async(req,res)=>{
       status: 'fail',
       message: 'password / username salah'})
       
-  }catch(error){
-    res.status(401).json({
-      status: 'fail',
-      message: error})
-} 
+//   }catch(error){
+//     res.status(401).json({
+//       status: 'fail',
+//       message: error})
+// } 
 
 
 }
