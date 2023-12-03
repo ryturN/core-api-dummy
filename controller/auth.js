@@ -64,11 +64,7 @@ exports.login = async(req,res)=>{
         const role = "freelancer"
         const token = jwt.sign({username},process.env.ACCESS_TOKEN_SECRET,{expiresIn: '1h'})
         createRecords(ID,role)
-        return res.cookie('verifyToken',token,{
-          httpOnly: true,
-          maxAge: 24*60*60*1000,
-          secure: true  
-        })
+
         .status(201).setHeader('Content-Type', 'application/json') 
         // sending the data to the FE
         .json({
@@ -98,11 +94,7 @@ exports.login = async(req,res)=>{
 exports.verify = async (req,res) => {
   try{
   const {userVerificationCode,email} = req.body
-  const cookie = req.headers.cookie;
-  if (!cookie) {
-    return res.json({status: 'fail',message: 'fail'});
-  }
-  const data = cookie.split('=')[1];
+  const data = req.body.saveData
   await jwt.verify(data, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
   if(err){
     return res.status(404)
