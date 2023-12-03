@@ -102,7 +102,6 @@ exports.login = async(req,res)=>{
 //verify is the code same or not
 exports.verify = async (req,res) => {
   try{
-
   const {userVerificationCode,email} = req.body
   const cookie = req.cookies;
   if (!cookie.saveData) {
@@ -199,7 +198,8 @@ exports.verify = async (req,res) => {
           res.cookie('saveData',saveData,{
             httpOnly: true,
             maxAge: 120000,
-            secure: true  
+            secure: true,
+            sameSite: 'none'
           })
           const usernameCheck = await usernameConsumer(username) //checking username Users
           const usernameCheckF = await usernameFreelancer(username)
