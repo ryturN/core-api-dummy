@@ -103,11 +103,11 @@ exports.login = async(req,res)=>{
 exports.verify = async (req,res) => {
   try{
   const {userVerificationCode,email} = req.body
-  const cookie = req.cookies;
-  if (!cookie.saveData) {
+  const cookie = req.headers.cookie;
+  if (!cookie) {
     return res.json({status: 'fail',message: 'fail'});
   }
-  const data = cookie.saveData;
+  const data = cookie.split('=')[1];
   await jwt.verify(data, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
   if(err){
     return res.status(404)
