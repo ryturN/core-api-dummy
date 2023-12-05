@@ -84,7 +84,18 @@ const searchProjectsFilter = async (filter, value) => {
 }
 
 const updateProjects = async (data) => {
-    const { project_name, project_desc, project } = data;
+    const { project_name, project_desc, deadline,project_category } = data;
+    const isDataExist = await projectsTable.findOne({where: {project_name}})
+    if(project_name == isDataExist.project_name || project_desc == isDataExist.project_desc || deadline == isDataExist.deadline || project_category == isDataExist.project_category){
+        return false;
+    }
+    const newData = {
+        project_name: project_name,
+        project_desc: project_desc,
+        deadline: deadline,
+        project_category: project_category
+    };
+    return projectsTable.update(newData);
 }
 
 // 
@@ -93,5 +104,6 @@ module.exports = {
     newProject,
     deleteProject,
     searchProjectsAll,
-    searchProjectsFilter
+    searchProjectsFilter,
+    updateProjects
 }

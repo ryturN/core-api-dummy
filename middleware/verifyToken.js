@@ -22,7 +22,7 @@ exports.verificationToken = async (req, res) => {
       const username = decoded.username
       const userConsumer = await usersTable.findOne({where: {username}})
       const userFreelancer = await freelancerTable.findOne({where: {username}})
-      const project = await projectsTable.findAll({attributes:["user_id","project_name","project_desc","deadline","project_category"]});
+      // const project = await projectsTable.findAll({attributes:["user_id","project_name","project_desc","deadline","project_category"]});
       if(userConsumer){
         res.json({
               status: 'success',
@@ -32,9 +32,6 @@ exports.verificationToken = async (req, res) => {
                 username: userConsumer.username,
                 email: userConsumer.email,
                 role: 'consumer'
-              },
-              dataProject:{
-                project
               }
             });
         }
@@ -48,9 +45,6 @@ exports.verificationToken = async (req, res) => {
                   email: userFreelancer.email,
                   role: 'freelancer'
                 },
-                dataProject:{
-                  project
-                }
               })
         }
     });

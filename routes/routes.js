@@ -49,6 +49,7 @@ router.get('/verify',(req,res)=>{
           status: 'success',
           message: 'See You Later Nerd'})
   })
+  router.get('/allProject',projects.getAllProject)
   
   
   
@@ -57,17 +58,18 @@ router.get('/verify',(req,res)=>{
   router.post('/register',auth.register)
   router.post('/verifyUser',auth.verify)
   router.post('/login', auth.login)
-  router.all('/profile/edit',profile.updateProfile);
+  router.post('/profile/edit',profile.updateProfile);
   router.post('/forget',resetPassword.forgetPassword);
   router.post('/forget/verify', resetPassword.verifyCode)
   router.post('/forget/verify/new', resetPassword.enterNewPassword)
   router.post('/addSkill',profile.addSkill);
   router.post('/newProject',projects.newProjectHandler)
-  router.post('/deleteProject',projects.deleteProjectsHandler)
   router.get('/skills/get',profile.getSkills)
   
   
-  
+  router.put('/updateProject',projects.updateProjectsHandler)
+
+  router.delete('/deleteProject', projects.deleteProjectsHandler)
 
 
 module.exports =router;

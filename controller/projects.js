@@ -1,8 +1,8 @@
-const { newProject, deleteProject, searchProjectsAll, searchProjectsFilter } = require ("../models/functions/projectsFunction");
+const { newProject, deleteProject, searchProjectsAll, searchProjectsFilter, updateProjects } = require ("../models/functions/projectsFunction");
 const usersTable = require('../models/tables/usersTable')
 const freelancerTable = require('../models/tables/freelancerTable')
 const jwt = require('jsonwebtoken')
-
+const projectsTable = require('../models/tables/projectsTable')
 
 // CREATE READ UPDATE DELETE FOR PROJECTS TABLE
 exports.newProjectHandler = async (req, res) => {
@@ -113,5 +113,53 @@ exports.deleteProjectsHandler = async (req, res) => {
     .status(200).json({status: "success", message: "Deleting the project data is succeeded!", data: data});
 }
 
-// HANDLER FOR ACTIVE PROJECTS
+exports.updateProjectsHandler = async (req, res) => {
+    const { project_id, project_name, project_desc, deadline, project_category } = req.body;
+    if(project_id == "" || typeof project_id == "undefined") {
+        return res
+        .status(404).json({status: "failed", message: "There's nothing to be requested in the body data!"});
+    };
+    const result = await projectsTable.findOne({where: {project_id}});
+    if(!result) {
+        return res
+        .status(404).json({status: "failed", message: "There's no project with that id!"});
+    }
+    if(result.project_name == project_name ||result.project_desc == project_desc || result.project_category === project_category) {
+        return res
+        .status(404).json({status: "failed", message: "There's nothing to be updated in the body data!"});
+    }
+    await projectsTable.update({
+        project_name,
+        project_desc,
+        deadline,
+        project_category,
+    },{where:{project_id}})
+    return res.status(200).json({
+        status : 'success',
+        message: 'success update project!'
+    })
+}
 
+exports.getAllProject = async (req,res) =>{
+    try {
+            const project = await projectsTable.findAll({attributes:["project_id","user_id","project_name","project_desc","deadline","project_category"]});
+            if(project){
+                return res.status(200)
+                .json({
+                    status: 'success',
+                    message: 'success get all project',
+                    result: {
+                        project
+                    }
+                })
+            }
+    } catch (error) {
+        if(error){
+            return res.status(500).json({
+                status: 'fail',
+                message: 'Internal server error'
+              });
+        }
+    }
+}
+// HANDLER FOR ACTIVE PROJECTS
